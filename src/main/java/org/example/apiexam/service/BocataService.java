@@ -3,7 +3,7 @@ package org.example.apiexam.service;
 import lombok.RequiredArgsConstructor;
 import org.example.apiexam.dto.BocataCreateDto;
 import org.example.apiexam.dto.BocataDto;
-import org.example.apiexam.exception.ResourceException;
+import org.example.apiexam.error.ResourceException;
 import org.example.apiexam.model.Bocata;
 import org.example.apiexam.model.Bread;
 import org.example.apiexam.repository.BocataRepository;

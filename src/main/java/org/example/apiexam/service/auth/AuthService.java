@@ -17,19 +17,16 @@ public class AuthService {
 
     public String login(String userName, String password) {
         User user = userRepository.findByName(userName)
-                .orElseThrow(() -> new UserNotFoundException("The user " + userName + " does not exist"));
+                .orElseThrow(() -> new UserNotFoundException(userName));
 
-        // Verificam el password
         if (!passwordMatches(password, user.getPassword())) {
             throw new BadCredentialsException("Wrong credentials for user " + userName);
         }
 
-        // Genera i retorna token
         return jwtUtils.generateToken(user);
     }
 
     public boolean passwordMatches(String rawPassword, String encryptedPassword) {
-        // Usa una biblioteca como BCrypt para comparar contraseñas
         return BCrypt.checkpw(rawPassword, encryptedPassword);
     }
 }

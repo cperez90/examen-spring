@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/bocata").permitAll()
                         .requestMatchers(HttpMethod.GET, "/bocata/*").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/error", "/api/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
