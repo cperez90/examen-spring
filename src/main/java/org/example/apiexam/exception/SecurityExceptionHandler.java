@@ -25,27 +25,32 @@ public class SecurityExceptionHandler implements AuthenticationEntryPoint, Acces
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
-            throws IOException, ServletException {
+            throws IOException {
 
-        writeProblemDetail(response, HttpStatus.UNAUTHORIZED, authException.getMessage(), request.getRequestURI());
+        writeApiError(response, HttpStatus.UNAUTHORIZED, authException.getMessage());
     }
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
-            throws IOException, ServletException {
-
-        writeProblemDetail(response, HttpStatus.FORBIDDEN, accessDeniedException.getMessage(), request.getRequestURI());
-    }
-
-    private void writeProblemDetail(HttpServletResponse response, HttpStatus status, String detail, String path)
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex)
             throws IOException {
 
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(status, detail);
-        pd.setProperty("timestamp", Instant.now());
-        pd.setProperty("path", path);
+        writeApiError(response, HttpStatus.FORBIDDEN,
+                "You don't have permission to access this resource");
+    }
+
+    private void writeApiError(HttpServletResponse response, HttpStatus status, String message)
+            throws IOException {
+
+        ApiError error = new ApiError(
+                status.value(),
+                status.getReasonPhrase(),
+                Instant.now(),
+                message
+        );
 
         response.setStatus(status.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        objectMapper.writeValue(response.getOutputStream(), pd);
+        objectMapper.writeValue(response.getOutputStream(), error);
     }
 }
+
